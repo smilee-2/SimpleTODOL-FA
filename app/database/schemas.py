@@ -22,6 +22,6 @@ class TaskSchemas(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     status: Mapped[bool]
     description: Mapped[str] = mapped_column(nullable=False)
-    user_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
 
 

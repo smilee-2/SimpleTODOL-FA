@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class Base(BaseModel):
@@ -9,8 +9,9 @@ class Base(BaseModel):
 class TaskModel(Base):
     status: bool
     description: str
-
+    user_id: int
+    model_config = ConfigDict(from_attributes=True)
 
 class UserModel(Base):
     username: str
-    email: EmailStr
+    model_config = ConfigDict(from_attributes=True)

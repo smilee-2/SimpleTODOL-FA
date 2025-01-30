@@ -1,9 +1,7 @@
 from fastapi import APIRouter
-from sqlalchemy.util import await_only
-from watchfiles import awatch
-
-from .models import TaskModel, UserModel
+from .models import TaskModel
 from app.database import crud
+
 
 router = APIRouter(prefix='/tasks',tags=['Task'])
 
