@@ -1,1 +1,1 @@
-from schemas import Base
+from .schemas import Base

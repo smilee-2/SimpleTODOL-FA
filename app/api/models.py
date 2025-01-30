@@ -1,11 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class Base(BaseModel):
+    id: int
     pass
 
 
 class TaskModel(Base):
-    id: int
     status: bool
     description: str
+
+
+class UserModel(Base):
+    username: str
+    email: EmailStr

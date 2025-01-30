@@ -1,8 +1,8 @@
 from pathlib import Path
 from pydantic_settings import BaseSettings
-from sqlalchemy.ext.asyncio import create_async_engine, async_scoped_session
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent
 
 
 class Setting(BaseSettings):
@@ -19,4 +19,5 @@ engine = create_async_engine(
     echo=settings.db_echo
 )
 
-session = async_scoped_session(engine)
+session = async_sessionmaker(engine, expire_on_commit=False)
+print(BASE_DIR)

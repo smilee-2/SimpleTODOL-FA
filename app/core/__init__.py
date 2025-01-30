@@ -1,1 +1,1 @@
-from config import settings, engine, session
+from .config import settings, engine, session
