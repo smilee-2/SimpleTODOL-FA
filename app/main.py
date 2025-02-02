@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from core import engine
+from config import engine
 from database import Base
 from api import router_tasks, router_users
 import uvicorn

@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from .schemas import TaskSchemas, UserSchemas
-from app.core.config import session
+from app.config.config import session
 from app.api.models import TaskModel, UserModel
 
 

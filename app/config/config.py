@@ -20,4 +20,3 @@ engine = create_async_engine(
 )
 
 session = async_sessionmaker(engine, expire_on_commit=False)
-print(BASE_DIR)
