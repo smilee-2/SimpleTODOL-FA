@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.api.models import UserModel
+from app.api.users.models_users import UserModel
 from app.database import crud
 from typing import Annotated
 

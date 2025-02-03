@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.models import TaskModel
+from app.api.tasks.models_tasks import TaskModel
 from app.database import crud
 
 

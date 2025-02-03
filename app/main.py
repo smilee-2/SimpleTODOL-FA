@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from config import engine
 from database import Base
-from api import router_tasks, router_users
+from api import router_tasks, router_users, router_auth
 import uvicorn
 
 @asynccontextmanager
@@ -16,6 +16,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(router_tasks)
 app.include_router(router_users)
+app.include_router(router_auth)
 
 @app.get('/',tags=['main'])
 async def main():
