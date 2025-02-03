@@ -2,7 +2,6 @@ from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class BaseTaskModel(BaseModel):
-    id: int
     pass
 
 

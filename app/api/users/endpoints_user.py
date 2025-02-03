@@ -8,11 +8,16 @@ router = APIRouter(prefix='/users', tags=['users'])
 
 @router.get('/get_user/{user_id}')
 async def get_user(user_id: int) -> UserModel:
-    user_s = await crud.get_user(user_id=user_id)
-    return user_s
+    return await crud.get_user(user_id=user_id)
 
 @router.post('/create_user')
 async def create_user(user: Annotated[UserModel, Depends()]) -> dict[str, str]:
     await crud.create_user(user_input=user)
     return {'msg':'success'}
+
+
+@router.delete('/delete_user')
+async def delete_user(user_id: int):
+    return await crud.delete_user(user_id)
+
 

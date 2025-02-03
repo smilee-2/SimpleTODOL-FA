@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from .schemas import TaskSchemas, UserSchemas
 from app.config.config import session
-from app.api.models import TaskModel, UserModel
+from app.api.users.models_users import UserModel
+from app.api.tasks.models_tasks import TaskModel
 
 
 async def add_task(id_user: int, task: TaskModel) -> dict[str,str]:
@@ -34,3 +35,12 @@ async def get_user(user_id: int) -> UserModel | None:
     async with session.begin() as sess:
         user = await sess.get(UserSchemas, user_id)
         return UserModel.model_validate(user)
+
+
+
+async def delete_user(user_id: int) -> bool:
+    async with session.begin() as sess:
+        user = await sess.get(UserSchemas, user_id)
+        await sess.delete(user)
+        await sess.commit()
+        return True

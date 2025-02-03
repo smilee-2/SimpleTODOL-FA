@@ -14,6 +14,7 @@ class UserSchemas(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
 
 
 class TaskSchemas(Base):
