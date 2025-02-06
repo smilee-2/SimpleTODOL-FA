@@ -1,18 +1,35 @@
-from fastapi import APIRouter, Depends
 from typing import Annotated
-from fastapi.security import HTTPBasicCredentials, HTTPBasic
+from app.database import crud
+from ..users.models_users import UserModel
+from .depends import get_password_hash, verify_password
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 
 
-router = APIRouter(prefix='/auth', tags=['auth'])
-
-security = HTTPBasic()
+router = APIRouter(prefix='/auth', tags=['Auth'])
 
 
-@router.get('/auth')
-async def auth_credentials(credentials: Annotated[HTTPBasicCredentials,Depends(security)]):
-    return {'msg': 'hi', 'username': credentials.username, 'password': credentials.password}
 
 
-@router.get('/auth')
-async def auth_credentials(auth_username: str = Depends(security)):
-    return
+
+@router.post('/register_user')
+async def register_user(user: Annotated[UserModel, Depends()]) -> dict[str, str]:
+    user.hashed_password = get_password_hash(user.hashed_password)
+    await crud.create_user(user_input=user)
+    return {'msg':'user created'}
+
+
+@router.post("/token")
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    user = await crud.get_user(form_data.username)
+    print("smt", user)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
+    print(form_data.password)
+    print(get_password_hash(form_data.password))
+    print(user.hashed_password)
+    check_password = verify_password(form_data.password, user.hashed_password)
+
+    if not check_password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
+    return {"access_token": user.username, "token_type": "bearer"}

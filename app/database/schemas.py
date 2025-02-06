@@ -1,8 +1,5 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import ForeignKey
-from datetime import datetime
-
-
 
 
 class Base(DeclarativeBase):
@@ -13,8 +10,8 @@ class UserSchemas(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(nullable=False)
-    password: Mapped[str] = mapped_column(nullable=False)
+    username: Mapped[str] = mapped_column(nullable=False, unique=True)
+    hashed_password: Mapped[str] = mapped_column(nullable=False)
 
 
 class TaskSchemas(Base):

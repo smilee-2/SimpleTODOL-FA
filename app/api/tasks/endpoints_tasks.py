@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.api.tasks.models_tasks import TaskModel
 from app.database import crud
+from typing import Annotated
 
 
 
@@ -13,5 +14,5 @@ async def get_one_task(id_user: int) -> list[TaskModel]:
 
 
 @router.post('/add_task')
-async def add_task(id_user, task: TaskModel):
+async def add_task(id_user, task: Annotated[TaskModel, Depends()]):
     return await crud.add_task(id_user=id_user, task=task)

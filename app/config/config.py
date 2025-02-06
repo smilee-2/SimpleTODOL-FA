@@ -19,4 +19,4 @@ engine = create_async_engine(
     echo=settings.db_echo
 )
 
-session = async_sessionmaker(engine, expire_on_commit=False)
+session_maker = async_sessionmaker(engine, expire_on_commit=False)
