@@ -1,14 +1,11 @@
 from sqlalchemy import select
-from sqlalchemy.util import await_only
-from watchfiles import awatch
-
 from .schemas import TaskSchemas, UserSchemas
 from app.config.config import session_maker
 from app.api.users.models_users import UserModel
 from app.api.tasks.models_tasks import TaskModel
 
 
-async def add_task(user_id: int, task: TaskModel) -> dict[str,str]:
+async def add_task(task: TaskModel, user_id: int) -> dict[str,str]:
     async with session_maker.begin() as session:
         task = TaskSchemas(**task.model_dump(), user_id=user_id)
         session.add(task)
@@ -16,7 +13,7 @@ async def add_task(user_id: int, task: TaskModel) -> dict[str,str]:
         return {'msg':'Success'}
 
 
-async def get_one_task(user_id: int) -> list[TaskModel]:
+async def get_one_task_by_id(user_id: int) -> list[TaskModel]:
     async with session_maker.begin() as session:
         subquery = select(UserSchemas.id).where(UserSchemas.id == user_id).subquery()
         stmt = select(TaskSchemas).where(TaskSchemas.user_id == subquery)
@@ -25,6 +22,12 @@ async def get_one_task(user_id: int) -> list[TaskModel]:
         tasks_model =[TaskModel.model_validate(task) for task in tasks]
     return tasks_model
 
+async def delete_one_task(task_id: int) -> bool:
+    async with session_maker.begin() as session:
+        task = await session.get(TaskSchemas, task_id)
+        await session.delete(task)
+        await session.commit()
+        return True
 
 async def create_user(user_input: UserModel) -> UserSchemas:
     async with session_maker.begin() as session:
@@ -49,9 +52,19 @@ async def get_user(username: str) -> UserModel | None:
         return None
 
 
+async def get_user_id(username: str) -> int | None:
+    async with session_maker.begin() as session:
+        query = select(UserSchemas).where(UserSchemas.username == username)
+        result = await session.execute(query)
+        user = result.scalar_one_or_none()
+        if user:
+            return user.id
+        return None
+
+
 async def delete_user(username: str) -> bool:
-    async with session_maker.begin() as sess:
-        user = await sess.get(UserSchemas, username)
-        await sess.delete(user)
-        await sess.commit()
+    async with session_maker.begin() as session:
+        user = await session.get(UserSchemas, username)
+        await session.delete(user)
+        await session.commit()
         return True

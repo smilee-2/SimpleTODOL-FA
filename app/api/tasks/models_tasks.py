@@ -8,5 +8,5 @@ class BaseTaskModel(BaseModel):
 class TaskModel(BaseTaskModel):
     status: bool
     description: str
-    user_id: int
+    #user_id: int
     model_config = ConfigDict(from_attributes=True)

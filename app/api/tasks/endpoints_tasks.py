@@ -11,10 +11,19 @@ router = APIRouter(prefix='/tasks',tags=['Task'])
 
 
 @router.get('/get_one_task/{id_user}')
-async def get_one_task(user_id: int, token: Annotated[str, Depends(oauth2_scheme)]) -> list[TaskModel]:
-    return await crud.get_one_task(user_id=user_id)
+async def get_one_task(token: Annotated[str, Depends(oauth2_scheme)]) -> list[TaskModel]:
+    user_id = await crud.get_user_id(token)
+    return await crud.get_one_task_by_id(user_id=user_id)
 
 
 @router.post('/add_task')
-async def add_task(user_id, task: Annotated[TaskModel, Depends()], token: Annotated[str, Depends(oauth2_scheme)]):
-    return await crud.add_task(user_id=user_id, task=task)
+async def add_task(task: Annotated[TaskModel, Depends()],
+                   token: Annotated[str, Depends(oauth2_scheme)]
+                   ) -> dict[str,str]:
+    user_id = await crud.get_user_id(token)
+    return await crud.add_task(task=task, user_id=user_id)
+
+
+@router.delete('/delete_one_task')
+async def delete_one_task_by_id(task_id: int, token: Annotated[str, Depends(oauth2_scheme)]) -> bool:
+    return await crud.delete_one_task(task_id=task_id)

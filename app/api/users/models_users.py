@@ -6,7 +6,6 @@ class BaseUserModel(BaseModel):
 
 
 class UserModel(BaseUserModel):
-    id: int
     username: str
     hashed_password: str
     model_config = ConfigDict(from_attributes=True)
