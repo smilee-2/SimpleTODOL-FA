@@ -16,9 +16,9 @@ async def add_task(user_id: int, task: TaskModel) -> dict[str,str]:
         return {'msg':'Success'}
 
 
-async def get_one_task(id_user: int) -> list[TaskModel]:
+async def get_one_task(user_id: int) -> list[TaskModel]:
     async with session_maker.begin() as session:
-        subquery = select(UserSchemas.id).where(UserSchemas.id == id_user).subquery()
+        subquery = select(UserSchemas.id).where(UserSchemas.id == user_id).subquery()
         stmt = select(TaskSchemas).where(TaskSchemas.user_id == subquery)
         result = await session.execute(stmt)
         tasks = result.scalars().all()

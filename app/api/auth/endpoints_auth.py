@@ -22,12 +22,8 @@ async def register_user(user: Annotated[UserModel, Depends()]) -> dict[str, str]
 @router.post("/token")
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     user = await crud.get_user(form_data.username)
-    print("smt", user)
     if user is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
-    print(form_data.password)
-    print(get_password_hash(form_data.password))
-    print(user.hashed_password)
     check_password = verify_password(form_data.password, user.hashed_password)
 
     if not check_password:

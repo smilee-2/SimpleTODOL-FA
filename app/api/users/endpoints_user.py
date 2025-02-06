@@ -6,9 +6,8 @@ from ..auth.depends import oauth2_scheme
 
 router = APIRouter(prefix='/users', tags=['Tsers'])
 
-
 @router.get('/get_user')
-async def get_user(username: str, token: Annotated[str, Depends(oauth2_scheme)]) -> UserModel | None:
+async def get_user(username: str) -> UserModel | None:
     return await crud.get_user(username=username)
 
 
