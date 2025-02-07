@@ -1,10 +1,11 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from .schemas import TaskSchemas, UserSchemas
 from app.config.config import session_maker
 from app.api.users.models_users import UserModel
 from app.api.tasks.models_tasks import TaskModel
 
 
+# Добавление задачи
 async def add_task(task: TaskModel, user_id: int) -> dict[str,str]:
     async with session_maker.begin() as session:
         task = TaskSchemas(**task.model_dump(), user_id=user_id)
@@ -13,15 +14,18 @@ async def add_task(task: TaskModel, user_id: int) -> dict[str,str]:
         return {'msg':'Success'}
 
 
-async def get_one_task_by_id(user_id: int) -> list[TaskModel]:
+# Получение всех задач пользователя
+async def get_tasks_by_id(user_id: int) -> list[TaskModel]:
     async with session_maker.begin() as session:
-        subquery = select(UserSchemas.id).where(UserSchemas.id == user_id).subquery()
+        subquery = select(UserSchemas.id).where(UserSchemas.id == user_id).scalar_subquery()
         stmt = select(TaskSchemas).where(TaskSchemas.user_id == subquery)
         result = await session.execute(stmt)
         tasks = result.scalars().all()
         tasks_model =[TaskModel.model_validate(task) for task in tasks]
     return tasks_model
 
+
+# Удаление одной задачи
 async def delete_one_task(task_id: int) -> bool:
     async with session_maker.begin() as session:
         task = await session.get(TaskSchemas, task_id)
@@ -29,19 +33,23 @@ async def delete_one_task(task_id: int) -> bool:
         await session.commit()
         return True
 
+
+# Создание нового пользователя
 async def create_user(user_input: UserModel) -> UserSchemas:
     async with session_maker.begin() as session:
         user = UserSchemas(**user_input.model_dump())
         session.add(user)
         await session.commit()
-    return user
+        return user
 
 
+# Получение пользователья по id
 async def get_user_by_id(user_id: int) -> UserSchemas|None:
     with session_maker.begin() as session:
         return await session.get(UserSchemas, user_id)
 
 
+# Получение пользователя по имени
 async def get_user(username: str) -> UserModel | None:
     async with session_maker.begin() as session:
         query = select(UserSchemas).where(UserSchemas.username == username)
@@ -52,6 +60,7 @@ async def get_user(username: str) -> UserModel | None:
         return None
 
 
+# Получение id пользователя
 async def get_user_id(username: str) -> int | None:
     async with session_maker.begin() as session:
         query = select(UserSchemas).where(UserSchemas.username == username)
@@ -62,6 +71,7 @@ async def get_user_id(username: str) -> int | None:
         return None
 
 
+# Удаление пользователя
 async def delete_user(username: str) -> bool:
     async with session_maker.begin() as session:
         user = await session.get(UserSchemas, username)
