@@ -2,22 +2,24 @@ from typing import Annotated
 from app.database import crud
 from ..users.models_users import UserModel
 from .depends import get_password_hash, verify_password
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.responses import RedirectResponse
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
 
 # Эндпоинт регистрация пользователя
 @router.post('/register_user')
-async def register_user(user: Annotated[UserModel, Depends()]) -> dict[str, str]:
+async def register_user(user: Annotated[UserModel, Depends()], request: Request):
     user.hashed_password = get_password_hash(user.hashed_password)
     await crud.create_user(user_input=user)
+    #return RedirectResponse('/auth/token', headers=request.headers)
     return {'msg': 'user created'}
 
 
 # Эндпоинт проверки авторизации пользователя
-@router.post("/token")
+@router.post('/token')
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     user = await crud.get_user(form_data.username)
     if user is None:

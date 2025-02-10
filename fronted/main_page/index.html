@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💜 Welcome to the TODO Zone! 💜</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #4a148c; /* Deep Purple */
+            color: #fff;
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center content vertically */
+            min-height: 100vh;
+            text-align: center;
+            background-image: linear-gradient(to bottom, #4a148c, #880e4f); /* Gradient background */
+        }
+
+        #header {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        #joke-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            font-size: 2em;
+            line-height: 1.5;
+            max-width: 80%;
+        }
+
+        .ball {
+            position: absolute;
+            border-radius: 50%;
+            background-color: #ce93d8; /* Lavender */
+            opacity: 0.5;
+            animation: rise 20s linear forwards, fadeOut 30s linear forwards; /* Adjusted durations */
+            bottom: -50px; /* Start below the viewport */
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-120vh); /* Rise above the viewport */
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 1.2em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header">💜 Welcome to the TODO Zone! 💜</div>
+
+    <div id="joke-container">
+        Why don't scientists trust atoms? Because they make up everything!
+    </div>
+
+    <div class="footer">
+        Enjoy your stay in the TODO Zone!
+    </div>
+
+    <script>
+        function createBall() {
+            const ball = document.createElement('div');
+            ball.classList.add('ball');
+            const size = Math.random() * 80 + 30; // Larger balls
+            ball.style.width = `${size}px`;
+            ball.style.height = `${size}px`;
+            ball.style.left = `${Math.random() * 100}vw`;
+            ball.style.animationDelay = `${Math.random() * 10}s`; // Stagger the start times
+            document.body.appendChild(ball);
+
+            setTimeout(() => {
+                ball.remove();
+                createBall();
+            }, 30000); // Match fadeOut duration
+        }
+
+        for (let i = 0; i < 20; i++) {
+            createBall();
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization and Registration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #6a1b9a, #4a148c); /* Violet-Blue Gradient */
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        .auth-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            width: 350px;
+            text-align: center;
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-container h2 {
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .auth-container input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .auth-container input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .auth-container input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .auth-container button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #9c27b0;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-container button:hover {
+            background-color: #ab47bc;
+            transform: translateY(-2px);
+        }
+
+        .auth-container button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-container p {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .auth-container a {
+            color: #b39ddb;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .auth-container a:hover {
+            color: #e1bee7;
+        }
+
+        /* Animated Background Bubbles */
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .bubbles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            animation: animateBubbles 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .bubbles li:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .bubbles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+        .bubbles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .bubbles li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+        }
+
+        .bubbles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .bubbles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+
+        .bubbles li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+        }
+
+        .bubbles li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+        }
+
+        .bubbles li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+
+        .bubbles li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+
+        .bubbles li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+
+        @keyframes animateBubbles {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <h2>Authorization</h2>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
+
+    <p>
+        <a href="#" id="toggleForm">Switch to Registration</a>
+    </p>
+</div>
+
+<ul class="bubbles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+
+<script>
+async function fetchWithToken(url, options = {}) {
+    const token = localStorage.getItem('access_token');
+    const headers = {
+        ...options.headers,
+        'Authorization': `Bearer ${token}`
+    };
+    const newOptions = { ...options, headers };
+    return fetch(url, newOptions);
+}
+async function loadMainPage() {
+    try {
+        const response = await fetchWithToken('/main_page');  // Use fetchWithToken
+        if (!response.ok) {
+            console.error("Failed to load main page:", response.status);
+            // Handle unauthorized/other errors (e.g., redirect to login)
+            window.location.href = '/';  // Redirect to login if not authorized
+            return;
+        }
+
+        const html = await response.text();
+        document.body.innerHTML = html; // Replace the *entire* body content
+
+    } catch (error) {
+        console.error("Error loading main page:", error);
+        alert("Failed to load main page. Check the console.");
+    }
+}
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const toggleFormLink = document.getElementById('toggleForm');
+    const authContainer = document.querySelector('.auth-container');
+    let isLogin = true;
+
+loginBtn.addEventListener('click', async () => {
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+    if (username && password) {
+        try {
+            const formData = new URLSearchParams();
+            formData.append('username', username);
+            formData.append('password', password);
+
+            const response = await fetch('/auth/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData.toString(),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                // Store the token in localStorage
+                localStorage.setItem('access_token', data.access_token);
+
+                // Redirect to the main page
+                loadMainPage();
+            } else {
+                alert(`Login failed: ${data.msg}`);
+            }
+        } catch (error) {
+            alert(`Login failed: ${error}`);
+        }
+    } else {
+        alert('Please enter username and password');
+    }
+});
+
+
+
+registerBtn.addEventListener('click', async () => {
+    const username = usernameInput.value;
+    const password = passwordInput.value; // Usually should be a hashed password.
+    if (username && password) {
+        try {
+            const url = `/auth/register_user?username=${encodeURIComponent(username)}&hashed_password=${encodeURIComponent(password)}`;
+
+            const response = await fetch(url, {  // Notice, that we don't have body.
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // We shouldn't pass content type.
+                },
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('access_token', data.access_token);
+
+                // Redirect to the main page
+                loadMainPage();
+            } else {
+                alert(`Registration failed: ${data.detail}`);
+            }
+        } catch (error) {
+            alert(`Registration failed: ${error}`);
+        }
+    } else {
+        alert('Please enter username and password');
+    }
+});
+
+    toggleFormLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        isLogin = !isLogin;
+
+        if (isLogin) {
+            loginBtn.style.display = 'block';
+            registerBtn.style.display = 'none';
+            toggleFormLink.textContent = 'Switch to Registration';
+            authContainer.querySelector('h2').textContent = 'Authorization';
+        } else {
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'block';
+            toggleFormLink.textContent = 'Switch to Login';
+            authContainer.querySelector('h2').textContent = 'Registration';
+        }
+    });
+
+    // Hide Register Button initially
+    registerBtn.style.display = 'none';
+    const token = localStorage.getItem('access_token');
+    if (token) {
+        // Token exists, load the main page content
+        loadMainPageContent();
+    } else {
+        // No token, redirect to login
+        window.location.href = '/'; // Redirect to login
+    }
+</script>
+
+</body>
+</html>

@@ -1,9 +1,15 @@
-from fastapi import FastAPI
+from api import router_tasks, router_users, router_auth
+from api.auth.depends import oauth2_scheme
+from database import Base
 from contextlib import asynccontextmanager
 from config import engine
-from database import Base
-from api import router_tasks, router_users, router_auth
+from pathlib import Path
+from typing import Annotated
+from fastapi import FastAPI, Request, Depends
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 import uvicorn
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -12,15 +18,38 @@ async def lifespan(app: FastAPI):
         await connection.run_sync(Base.metadata.create_all)
     yield
 
+
+BASE_DIR = Path(__file__).parent.parent
+
 app = FastAPI(lifespan=lifespan)
+
 
 app.include_router(router_tasks)
 app.include_router(router_users)
 app.include_router(router_auth)
 
-@app.get('/',tags=['main'])
-async def main():
-    return {'msg': 'Hello'}
+
+templates_auth = Jinja2Templates(directory=f'{BASE_DIR}/fronted/auth_page')
+templates_main = Jinja2Templates(directory=f'{BASE_DIR}/fronted/main_page')
+
+# Тестовая штука ----
+# @app.post('/main_page')
+# async def main_page(request: Request, token: Annotated[str, Depends(oauth2_scheme)]):
+#     context = {'request': request}
+#     return templates_main.TemplateResponse('index.html', context)
+
+# Страница какая-то
+@app.get('/main_page')
+async def main_page(request: Request, token: Annotated[str, Depends(oauth2_scheme)]):
+    context = {'request': request}
+    return templates_main.TemplateResponse('index.html', context)
+
+
+# Страница авторизации
+@app.get('/')
+async def main(request: Request):
+    context = {'request': request}
+    return templates_auth.TemplateResponse('index.html', context)
 
 
 if __name__ == '__main__':
