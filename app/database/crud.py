@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import select
 from .schemas import TaskSchemas, UserSchemas
 from app.config.config import session_maker
 from app.api.users.models_users import UserModel
@@ -15,14 +15,26 @@ async def add_task(task: TaskModel, user_id: int) -> dict[str,str]:
 
 
 # Получение всех задач пользователя
-async def get_tasks_by_id(user_id: int) -> list[TaskModel]:
+async def get_all_tasks_by_id(user_id: int) -> list[TaskModel]:
     async with session_maker.begin() as session:
-        subquery = select(UserSchemas.id).where(UserSchemas.id == user_id).scalar_subquery()
-        stmt = select(TaskSchemas).where(TaskSchemas.user_id == subquery)
+        stmt = select(TaskSchemas).where(TaskSchemas.user_id == user_id)
         result = await session.execute(stmt)
         tasks = result.scalars().all()
         tasks_model =[TaskModel.model_validate(task) for task in tasks]
     return tasks_model
+
+
+# Обновление задачи
+async def update_task(new_description: str, task_id: int, user_id: int) -> dict[str, str]:
+    async with session_maker.begin() as session:
+        stmt = select(TaskSchemas).where(
+            TaskSchemas.user_id == user_id,
+            TaskSchemas.id == task_id
+        )
+        result = await session.execute(stmt)
+        task = result.scalars().one()
+        task.description = new_description
+        return {'msg': 'success', 'new task': new_description}
 
 
 # Удаление одной задачи
