@@ -13,7 +13,7 @@ class UserSchemas(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(nullable=False, unique=True)
-    hashed_password: Mapped[str] = mapped_column(nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
 
 # Таблица задач
 class TaskSchemas(Base):
@@ -23,4 +23,13 @@ class TaskSchemas(Base):
     description: Mapped[str] = mapped_column(nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
 
+
+class FileSchemas(Base):
+    __tablename__ = 'files'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    filename: Mapped[str] = mapped_column(nullable=False)
+    size: Mapped[int] = mapped_column(nullable=False)
+    directory: Mapped[str] = mapped_column(nullable=False)
+    user_id:  Mapped[int] = mapped_column(ForeignKey('users.id'))
 
