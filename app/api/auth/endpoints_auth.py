@@ -1,9 +1,12 @@
 from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi.security import OAuth2PasswordRequestForm
+
 from app.database.crud import UserCrud
 from ..users.models_users import UserModel
 from .depends import get_password_hash, verify_password
-from fastapi import APIRouter, Depends, HTTPException, status, Request
-from fastapi.security import OAuth2PasswordRequestForm
+
 
 
 router = APIRouter(prefix='/auth', tags=['Auth'])

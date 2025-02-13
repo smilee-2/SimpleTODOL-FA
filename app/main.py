@@ -1,14 +1,15 @@
-from api import router_tasks, router_users, router_auth, router_files
-from api.auth.depends import oauth2_scheme
-from database import Base
-from contextlib import asynccontextmanager
-from config import engine
 from pathlib import Path
 from typing import Annotated
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request, Depends
 from fastapi.templating import Jinja2Templates
 import uvicorn
 
+from api import router_tasks, router_users, router_auth, router_files
+from api.auth.depends import oauth2_scheme
+from database import Base
+from config import engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

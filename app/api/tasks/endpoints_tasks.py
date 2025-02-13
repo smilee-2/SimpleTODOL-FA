@@ -1,8 +1,11 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from app.api.tasks.models_tasks import TaskModel
 from app.database.crud import TaskCrud, UserCrud
-from typing import Annotated
 from ..auth.depends import oauth2_scheme
+
 
 router = APIRouter(prefix='/tasks', tags=['Task'])
 

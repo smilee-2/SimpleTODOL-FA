@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
+
 from app.api.users.models_users import UserModel
 from app.database.crud import UserCrud
 
