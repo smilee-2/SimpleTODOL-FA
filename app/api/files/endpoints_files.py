@@ -47,8 +47,8 @@ async def upload_files(up_files: list[UploadFile], token: Annotated[str, Depends
 # Скачать файл
 # TODO
 @router.get('/download_file')
-async def download_file(token: Annotated[str, Depends(oauth2_scheme)]):
-    user_file = await FileCrud.get_user_file()
+async def download_file(file_id:int ,token: Annotated[str, Depends(oauth2_scheme)]):
+    user_file = await FileCrud.get_user_file(file_id=file_id, username=token)
     if user_file:
         return FileResponse(user_file.directory)
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='file not found')

@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from .schemas import TaskSchemas, UserSchemas, FileSchemas
 from app.config.config import session_maker
 from app.api.users.models_users import UserModel
@@ -96,14 +96,19 @@ class UserCrud:
             return None
 
 
-    # Удаление пользователя
+    # Удаление пользователя вместе со всеми задачами
     @staticmethod
     async def delete_user(username: str) -> bool:
         async with session_maker.begin() as session:
-            user = await session.get(UserSchemas, username)
-            await session.delete(user)
-            await session.commit()
-            return True
+            query_user = select(UserSchemas).where(UserSchemas.username == username)
+            result = await session.execute(query_user)
+            user = result.scalar_one_or_none()
+            if user:
+                query_tasks = delete(TaskSchemas).where(TaskSchemas.user_id == user.id)
+                result_tasks = await session.execute(query_tasks)
+                await session.delete(user)
+                return True
+            return False
 
 
 class FileCrud:
@@ -114,11 +119,16 @@ class FileCrud:
             user_file = FileSchemas(**file.model_dump())
             session.add(user_file)
 
-    # TODO
+
     @staticmethod
     async def get_user_file(file_id: int, username: str) -> FileSchemas | None:
-        ...
-
+        async with session_maker.begin() as session:
+            user_id = await  UserCrud.get_user_id(username)
+            query = select(FileSchemas).where(FileSchemas.id == file_id, FileSchemas.user_id == user_id)
+            result = await session.execute(query)
+            if result:
+                return result.scalars().all()
+            return None
 
     @staticmethod
     async def delete_user_file(file_id: int) -> dict[str, str]:
