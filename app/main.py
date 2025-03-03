@@ -8,7 +8,7 @@ import uvicorn
 
 from api import router_tasks, router_users, router_auth, router_files
 from api.auth.depends import oauth2_scheme
-from database import Base
+from app.database import Base
 from config import engine
 
 @asynccontextmanager
@@ -34,7 +34,7 @@ templates_auth = Jinja2Templates(directory=f'{BASE_DIR}/fronted/auth_page')
 templates_main = Jinja2Templates(directory=f'{BASE_DIR}/fronted/main_page')
 
 
-# Страница какая-то
+# Страница TODOList
 @app.get('/main_page')
 async def main_page(request: Request, token: Annotated[str, Depends(oauth2_scheme)]):
     context = {'request': request}
@@ -45,8 +45,8 @@ async def main_page(request: Request, token: Annotated[str, Depends(oauth2_schem
 @app.get('/')
 async def main(request: Request):
     context = {'request': request}
-    return templates_auth.TemplateResponse('index.html', context)
-
+    #return templates_auth.TemplateResponse('index.html', context)
+    return {'msg': 'hi'}
 
 if __name__ == '__main__':
     uvicorn.run('main:app')
